@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Browser-based classroom person counter using TensorFlow.js and COCO-SSD." />
+  <title>Person Counter AI</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.22.0/dist/tf.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd@2.2.3/dist/coco-ssd.min.js"></script>
+</head>
+<body>
+  <main class="app">
+    <header class="topbar">
+      <div>
+        <div class="eyebrow">COMPUTER VISION</div>
+        <h1>Person Counter <span>AI</span></h1>
+        <p>Upload a photo and count the people inside the frame.</p>
+      </div>
+      <div id="modelStatus" class="status loading">Loading AI model…</div>
+    </header>
+
+    <section class="controls card">
+      <label class="upload" id="dropZone">
+        <input id="fileInput" type="file" accept="image/*" />
+        <div class="upload-icon">＋</div>
+        <strong>Upload classroom photo</strong>
+        <span>Click or drag & drop an image here</span>
+      </label>
+
+      <div class="control-row">
+        <div class="field">
+          <label for="confidence">Confidence</label>
+          <div class="range-line">
+            <input id="confidence" type="range" min="0.20" max="0.90" step="0.01" value="0.45" />
+            <output id="confidenceValue">45%</output>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="tiling">Wide-photo enhancement</label>
+          <select id="tiling">
+            <option value="on" selected>ON — overlapping tiles</option>
+            <option value="off">OFF — single pass</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button id="detectBtn" class="primary" disabled>Analyze Photo</button>
+        <button id="resetBtn" class="secondary">Reset</button>
+      </div>
+    </section>
+
+    <section class="result-grid">
+      <div class="viewer card">
+        <div class="section-title">
+          <span>Detection frame</span>
+          <span id="imageInfo">No image loaded</span>
+        </div>
+        <div id="canvasWrap" class="canvas-wrap empty">
+          <div class="empty-state">
+            <div class="big-icon">👥</div>
+            <div>Upload a photo to begin</div>
+          </div>
+          <canvas id="canvas"></canvas>
+        </div>
+      </div>
+
+      <aside class="side">
+        <div class="count-card card">
+          <div class="count-label">PEOPLE DETECTED</div>
+          <div id="count">—</div>
+          <div id="confidenceSummary" class="summary">Waiting for an image</div>
+          <div class="manual">
+            <button id="minusBtn" aria-label="Decrease count">−</button>
+            <span>Manual adjustment</span>
+            <button id="plusBtn" aria-label="Increase count">+</button>
+          </div>
+        </div>
+
+        <div class="info-card card">
+          <h2>How it works</h2>
+          <ol>
+            <li>Your image stays in the browser for detection.</li>
+            <li>The AI searches for <b>person</b> objects.</li>
+            <li>Wide photos can be split into overlapping tiles.</li>
+            <li>Duplicate detections are removed automatically.</li>
+          </ol>
+          <p class="note">The result is an AI estimate. Very small, hidden, heavily occluded, or unusual people can still be missed.</p>
+        </div>
+      </aside>
+    </section>
+
+    <footer>
+      <span>Runs locally in your browser • No image upload server</span>
+      <span>TensorFlow.js + COCO-SSD</span>
+    </footer>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
